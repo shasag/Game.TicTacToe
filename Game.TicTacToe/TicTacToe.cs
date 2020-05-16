@@ -15,13 +15,18 @@ namespace Game.TicTacToe
         private void StartGame()
         {
             GameBoard gameBoard = new GameBoard();
-            
             IPlayer playerX = InitializeHumanUser(gameBoard, 1);
-            IPlayer playerY = InitializeHumanUser(gameBoard, 2);
+            Console.WriteLine($"Play Type : \n1. 2-Player \n2. Play with computer");
+            var type = Console.ReadLine();
+            IPlayer playerY;
+            if(type == "1")
+                playerY = InitializeHumanUser(gameBoard, 2);
+            else
+                playerY = InitializeHumanUser(gameBoard, 2);
             Console.Clear();
             gameBoard.CurrentPlayer = playerX;
+            gameBoard.MoveCounter = 0;
             bool play = true;
-            int moveCounter = 0;
             while (play)
             {
                 gameBoard.DisplayBoard();
@@ -30,7 +35,7 @@ namespace Game.TicTacToe
                 {
                     gameBoard.MarkCell(gameBoard.CurrentPlayer, gameBoard.CurrentPlayer.TakeTurn());
                     gameBoard.ClearBoard();
-                    moveCounter++;
+                    gameBoard.MoveCounter++;
 
                     if (gameBoard.CheckWin())
                     {
@@ -38,7 +43,7 @@ namespace Game.TicTacToe
                         gameBoard.DisplayBoard();
                         play = false;
                     }
-                    else if (gameBoard.CheckDraw(moveCounter))
+                    else if (gameBoard.CheckDraw())
                     {
                         Console.WriteLine($"GAME DRAW");
                         gameBoard.DisplayBoard();

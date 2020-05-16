@@ -15,6 +15,8 @@ namespace Game.TicTacToe
 
         public IPlayer CurrentPlayer { get; set; }
 
+        public int MoveCounter { get; set; }
+
         public GameBoard()
         {
             InitializeBoard();
@@ -85,9 +87,14 @@ namespace Game.TicTacToe
             }
         }
 
-        public bool CheckDraw(int moveCounter)
+        public bool CheckDraw()
         {
-            if (moveCounter == BOARD_SIZE * BOARD_SIZE)
+            return IsMoveRemaining();
+        }
+
+        public bool IsMoveRemaining()
+        {
+            if (MoveCounter == BOARD_SIZE * BOARD_SIZE)
                 return true;
             return false;
         }

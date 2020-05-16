@@ -143,9 +143,9 @@ namespace Game.TicTacToe.Tests
         {
             var gameBoardInstance = new GameBoard();
 
-            var moveCounter = GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE;
+            gameBoardInstance.MoveCounter = GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE;
 
-            Assert.AreEqual(gameBoardInstance.CheckDraw(moveCounter), true);
+            Assert.AreEqual(gameBoardInstance.CheckDraw(), true);
         }
 
         [TestMethod]
