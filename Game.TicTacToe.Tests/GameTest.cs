@@ -1,5 +1,6 @@
 using Game.TicTacToe.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -273,6 +274,39 @@ namespace Game.TicTacToe.Tests
             gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 4);
 
             Assert.AreEqual(testPlayerO.TakeTurn(), 8);
+        }
+
+        [TestMethod]
+        public void AIPlayer_ConstructurTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            AIPlayer player = new Mock<AIPlayer>(gameBoardInstance).Object;
+
+            Assert.AreEqual(player.Name, "AI Player");
+        }
+
+        [TestMethod]
+        public void HumanPlayer_ConstructurTes5()
+        {
+            HumanPlayer player = new Mock<HumanPlayer>("Test", 'X').Object;
+
+            Assert.AreEqual(player.Name, "Test");
+        }
+
+        [TestMethod]
+        public void GameBoard_ConstructurTest()
+        {
+            GameBoard gameBoard = new Mock<GameBoard>().Object;
+
+            Assert.IsTrue(gameBoard.Board[0, 0].IsEmpty());
+        }
+
+        [TestMethod]
+        public void Cell_ConstructurTest()
+        {
+            Cell cell = new Mock<Cell>(1, 1).Object;
+
+            Assert.IsTrue(cell.GetCellState() == Enums.CellOption.EmptyCell);
         }
 
         [TestMethod]
