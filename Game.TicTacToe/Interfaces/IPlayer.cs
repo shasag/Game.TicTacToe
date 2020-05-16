@@ -4,9 +4,11 @@ using System.Text;
 
 namespace Game.TicTacToe.Interfaces
 {
-    interface IPlayer
+    public interface IPlayer
     {
-        string PreferredSymbol { get; set; }
+        char PreferredSymbol { get; set; }
         string Name { get; set; }
+
+        public int TakeTurn();
     }
 }
