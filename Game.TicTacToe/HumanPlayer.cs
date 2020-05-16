@@ -9,8 +9,8 @@ namespace Game.TicTacToe
     public class HumanPlayer : IPlayer
     {
 
-        public CellOption PreferredSymbol { get; set; }
-        public string Name { get; set; }
+        public CellOption PreferredSymbol { get; private set; }
+        public string Name { get; private set; }
 
         public HumanPlayer(string name, char symbol)
         {

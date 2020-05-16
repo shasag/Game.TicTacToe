@@ -15,10 +15,25 @@ namespace Game.TicTacToe
 
         public IPlayer CurrentPlayer { get; set; }
 
-        public int MoveCounter { get; set; }
-
         private Stack<Cell> _moveStack;
 
+        public override string ToString()
+        {
+            string str = "";
+            for(int i = 0; i < BOARD_SIZE; i++)
+            {
+                for(int j = 0; j < BOARD_SIZE; j++)
+                {
+                    switch(Board[i, j].GetCellState())
+                    {
+                        case CellOption.CrossCell: str += "X";break;
+                        case CellOption.NoughtCell: str += "O"; break;
+                        case CellOption.EmptyCell: str += "-"; break;
+                    }
+                }
+            }
+            return str;
+        }
         public GameBoard()
         {
             _moveStack = new Stack<Cell>();
@@ -73,7 +88,7 @@ namespace Game.TicTacToe
         public CellOption GetOpponentSymbol(CellOption currentPlayerSymbol)
         {
             if (currentPlayerSymbol == CellOption.CrossCell)
-                return CellOption.NoughtCell;
+                return  CellOption.NoughtCell;
             else
                 return CellOption.CrossCell;
         }
@@ -90,7 +105,7 @@ namespace Game.TicTacToe
             }
         }
 
-        public IEnumerable<int> GetAvailableMoves()
+        public IEnumerable<int> GetUnPlayedMoves()
         {
             for (int i = 0; i < BOARD_SIZE; i++)
             {
@@ -115,31 +130,24 @@ namespace Game.TicTacToe
 
         public bool IsMoveRemaining()
         {
-            if (MoveCounter == BOARD_SIZE * BOARD_SIZE)
-                return false;
-            return true;
+            return _moveStack.Count() < BOARD_SIZE * BOARD_SIZE;
         }
 
-        public void MarkCell(IPlayer player, int cNum)
+        public bool IsCellEmpty(int cNum)
         {
-            int yPos = (cNum - 1) / BOARD_SIZE;
-            int xPos = (cNum - 1) % BOARD_SIZE;
+            int xPos = (cNum - 1) / BOARD_SIZE;
+            int yPos = (cNum - 1) % BOARD_SIZE;
 
-            if (cNum > BOARD_SIZE * BOARD_SIZE)
-            {
-                Console.WriteLine("Invalid entry. Try again!!");
-                MarkCell(player, player.TakeTurn());
-            }
-            else if (Board[yPos, xPos].IsEmpty())
-            {
-                Board[yPos, xPos].MarkCell(player);
-                _moveStack.Push(Board[yPos, xPos]);
-            }
-            else
-            {
-                Console.WriteLine("The cell poisition is already played. Try again!!");
-                MarkCell(player, player.TakeTurn());
-            }
+            return Board[xPos, yPos].IsEmpty();
+        }
+
+        public void MarkCell(CellOption playerSymbol, int cNum)
+        {
+            int xPos = (cNum - 1) / BOARD_SIZE;
+            int yPos = (cNum - 1) % BOARD_SIZE;
+
+            Board[xPos, yPos].MarkCell(playerSymbol);
+            _moveStack.Push(Board[xPos, yPos]);
         }
 
         public bool CheckWin()
@@ -153,7 +161,7 @@ namespace Game.TicTacToe
 
         private bool checkDigonalsForWin()
         {
-            return chekDigonals(BOARD_SIZE);
+            return checkDigonals(BOARD_SIZE);
             //return checkPattern(Board[0, 0].GetCellState(), Board[1, 1].GetCellState(), Board[2, 2].GetCellState()) ||
             //    checkPattern(Board[2, 0].GetCellState(), Board[1, 1].GetCellState(), Board[0, 2].GetCellState());
         }
@@ -201,7 +209,7 @@ namespace Game.TicTacToe
 
         }
 
-        private bool chekDigonals(int boardSize)
+        private bool checkDigonals(int boardSize)
         {
             var retValLeft = false;
             var retValRight = false;
@@ -213,7 +221,7 @@ namespace Game.TicTacToe
                 {
                     if(i == j)
                         lstCellsLeft.Add(Board[i, j].GetCellState());
-                    else if(i != j && i+j == boardSize -1)
+                    if((i == j && i+j == boardSize -1) || i + j == boardSize - 1)
                         lstCellsRight.Add(Board[i, j].GetCellState());
                 }
             }

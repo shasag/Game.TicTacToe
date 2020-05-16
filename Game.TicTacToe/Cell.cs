@@ -36,14 +36,11 @@ namespace Game.TicTacToe
             cellState = CellOption.EmptyCell;
         }
 
-        public void MarkCell(IPlayer player)
+        public void MarkCell(CellOption playerSymbol)
         {
             if (IsEmpty())
             {
-                if (player.PreferredSymbol == CellOption.CrossCell)
-                    cellState = CellOption.CrossCell;
-                else
-                    cellState = CellOption.NoughtCell;
+                cellState = playerSymbol;
             }
         }
     }

@@ -14,7 +14,7 @@ namespace Game.TicTacToe.Tests
         {
             var gameBoardInstance = new GameBoard();
             var testPlayer = new HumanPlayer("TestPlayer", 'X');
-            gameBoardInstance.MarkCell(testPlayer, 1);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 1);
 
             var cellStatus = gameBoardInstance.Board[0, 1].GetCellState();
 
@@ -51,9 +51,9 @@ namespace Game.TicTacToe.Tests
             //First row same
             var gameBoardInstance = new GameBoard();
             var testPlayer = new HumanPlayer("TestPlayer", 'X');
-            gameBoardInstance.MarkCell(testPlayer, 1);
-            gameBoardInstance.MarkCell(testPlayer, 2);
-            gameBoardInstance.MarkCell(testPlayer, 3);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 1);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 2);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 3);
             Assert.AreEqual(gameBoardInstance.CheckWin(), true);
         }
 
@@ -63,9 +63,9 @@ namespace Game.TicTacToe.Tests
             //First row same
             var gameBoardInstance = new GameBoard();
             var testPlayer = new HumanPlayer("TestPlayer", 'X');
-            gameBoardInstance.MarkCell(testPlayer, 1);
-            gameBoardInstance.MarkCell(testPlayer, 4);
-            gameBoardInstance.MarkCell(testPlayer, 7);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 1);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 4);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 7);
             Assert.AreEqual(gameBoardInstance.CheckWin(), true);
         }
 
@@ -122,9 +122,9 @@ namespace Game.TicTacToe.Tests
             //First row same
             var gameBoardInstance = new GameBoard();
             var testPlayer = new HumanPlayer("TestPlayer", 'X');
-            gameBoardInstance.MarkCell(testPlayer, 1);
-            gameBoardInstance.MarkCell(testPlayer, 5);
-            gameBoardInstance.MarkCell(testPlayer, 9);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 1);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 5);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 9);
             Assert.AreEqual(gameBoardInstance.CheckWin(), true);
         }
 
@@ -134,20 +134,74 @@ namespace Game.TicTacToe.Tests
             //First row same
             var gameBoardInstance = new GameBoard();
             var testPlayer = new HumanPlayer("TestPlayer", 'X');
-            gameBoardInstance.MarkCell(testPlayer, 3);
-            gameBoardInstance.MarkCell(testPlayer, 5);
-            gameBoardInstance.MarkCell(testPlayer, 7);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 3);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 5);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 7);
             Assert.AreEqual(gameBoardInstance.CheckWin(), true);
         }
 
         [TestMethod]
-        public void ChekDrawTest()
+        public void CheckNotWinRightDigonalTest()
+        {
+            //First row same
+            var gameBoardInstance = new GameBoard();
+            var testPlayer = new HumanPlayer("TestPlayer", 'X');
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 3);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 5);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 6);
+            Assert.AreEqual(gameBoardInstance.CheckWin(), false);
+        }
+
+        [TestMethod]
+        public void CheckDrawTest()
         {
             var gameBoardInstance = new GameBoard();
 
-            gameBoardInstance.MoveCounter = GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE;
-
+            //gameBoardInstance.IsMoveRemaining() = GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE;
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 1);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 2); 
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 3);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 4);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 5);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 6);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 7);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 8);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 9);
             Assert.AreEqual(gameBoardInstance.CheckDraw(), true);
+        }
+
+        [TestMethod]
+        public void IsMoveRemainingTest()
+        {
+            var gameBoardInstance = new GameBoard();
+
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 1);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 2);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 3);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 4);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 5);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 6);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 7);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 8);
+            Assert.AreEqual(gameBoardInstance.IsMoveRemaining(), true);
+        }
+
+        [TestMethod]
+        public void IsMoveNotRemainingTest()
+        {
+            var gameBoardInstance = new GameBoard();
+
+            //gameBoardInstance.IsMoveRemaining() = GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE;
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 1);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 2);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 3);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 4);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 5);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 6);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 7);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 8);
+            gameBoardInstance.MarkCell(Enums.CellOption.NoughtCell, 9);
+            Assert.AreEqual(gameBoardInstance.IsMoveRemaining(), false);
         }
 
         [TestMethod]
@@ -156,15 +210,15 @@ namespace Game.TicTacToe.Tests
             var gameBoardInstance = new GameBoard();
             var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
             var testPlayerY = new HumanPlayer("TestPlayerY", 'O');
-            gameBoardInstance.MarkCell(testPlayerX, 1);
-            gameBoardInstance.MarkCell(testPlayerY, 2);
-            gameBoardInstance.MarkCell(testPlayerX, 3);
-            gameBoardInstance.MarkCell(testPlayerY, 4);
-            gameBoardInstance.MarkCell(testPlayerX, 5);
-            gameBoardInstance.MarkCell(testPlayerY, 6);
-            gameBoardInstance.MarkCell(testPlayerY, 7);
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 1);
+            gameBoardInstance.MarkCell(testPlayerY.PreferredSymbol, 2);
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 3);
+            gameBoardInstance.MarkCell(testPlayerY.PreferredSymbol, 4);
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 5);
+            gameBoardInstance.MarkCell(testPlayerY.PreferredSymbol, 6);
+            gameBoardInstance.MarkCell(testPlayerY.PreferredSymbol, 7);
             var expectedList = new List<int> { 8, 9};
-            var actualList = gameBoardInstance.GetAvailableMoves().ToList();
+            var actualList = gameBoardInstance.GetUnPlayedMoves().ToList();
             Assert.IsFalse(expectedList.Except(actualList).Any());
             Assert.IsFalse(actualList.Except(expectedList).Any());
         }
@@ -174,35 +228,16 @@ namespace Game.TicTacToe.Tests
         {
             var gameBoardInstance = new GameBoard();
             var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
-            gameBoardInstance.MarkCell(testPlayerX, 1);
-            gameBoardInstance.MarkCell(testPlayerX, 2);
-            gameBoardInstance.MarkCell(testPlayerX, 9);
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 1);
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 2);
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 9);
             gameBoardInstance.BackTrackMove();
             var expectedList = new List<int>() { 3, 4, 5, 6, 7, 8, 9 };
-            var actualList = gameBoardInstance.GetAvailableMoves().ToList();
+            var actualList = gameBoardInstance.GetUnPlayedMoves().ToList();
             Assert.IsFalse(expectedList.Except(actualList).Any());
             Assert.IsFalse(actualList.Except(expectedList).Any());
         }
 
-        [TestMethod]
-        public void ChekMoveRemainingTest()
-        {
-            var gameBoardInstance = new GameBoard();
-
-            gameBoardInstance.MoveCounter = GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE - 3;
-
-            Assert.AreEqual(gameBoardInstance.IsMoveRemaining(), true);
-        }
-
-        [TestMethod]
-        public void ChekMoveNotRemainingTest()
-        {
-            var gameBoardInstance = new GameBoard();
-
-            gameBoardInstance.MoveCounter = GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE;
-
-            Assert.AreEqual(gameBoardInstance.IsMoveRemaining(), false);
-        }
 
         [TestMethod]
         public void GetOpponentSymbolForPlayerXTest()
@@ -224,6 +259,111 @@ namespace Game.TicTacToe.Tests
             gameBoardInstance.CurrentPlayer = testPlayerY;
 
             Assert.AreEqual(gameBoardInstance.GetOpponentSymbol(gameBoardInstance.CurrentPlayer.PreferredSymbol), testPlayerX.PreferredSymbol);
+        }
+
+        [TestMethod]
+        public void TakeTurnAIWinTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
+            var testPlayerO = new AIPlayer(gameBoardInstance);
+            gameBoardInstance.MarkCell(testPlayerO.PreferredSymbol, 2);
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 1);
+            gameBoardInstance.MarkCell(testPlayerO.PreferredSymbol, 5);
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 4);
+
+            Assert.AreEqual(testPlayerO.TakeTurn(), 8);
+        }
+
+        [TestMethod]
+        public void TakeTurnAISaveTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
+            var testPlayerO = new AIPlayer(gameBoardInstance);
+            gameBoardInstance.MarkCell(testPlayerO.PreferredSymbol, 5);
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 1);
+            gameBoardInstance.MarkCell(testPlayerO.PreferredSymbol, 3);
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 7);
+
+            Assert.AreEqual(testPlayerO.TakeTurn(), 4);
+        }
+
+        [TestMethod]
+        public void IsCellEmptyTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 1);
+
+            Assert.IsTrue(gameBoardInstance.IsCellEmpty(2));
+        }
+
+        [TestMethod]
+        public void IsCellEmptyNotTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 1);
+
+            Assert.IsFalse(gameBoardInstance.IsCellEmpty(1));
+        }
+
+        [TestMethod]
+        public void GetCellStateTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 1);
+            var cell = gameBoardInstance.Board[0, 0];
+
+            Assert.IsTrue(cell.GetCellState() != Enums.CellOption.EmptyCell);
+        }
+
+        [TestMethod]
+        public void IsEmptyTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 1);
+            var cell = gameBoardInstance.Board[0, 0];
+
+            Assert.IsTrue(cell.GetCellState() != Enums.CellOption.EmptyCell);
+        }
+
+        [TestMethod]
+        public void ResetCellTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 1);
+            var cell = gameBoardInstance.Board[0, 0];
+            cell.ResetCell();
+
+            Assert.IsTrue(cell.GetCellState() == Enums.CellOption.EmptyCell);
+        }
+
+        [TestMethod]
+        public void NotMarkCellTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
+            gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 1);
+            var cell = gameBoardInstance.Board[0, 0];
+            cell.MarkCell(Enums.CellOption.NoughtCell);
+
+            Assert.IsFalse(cell.GetCellState() == Enums.CellOption.NoughtCell);
+        }
+
+        [TestMethod]
+        public void MarkCellTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            gameBoardInstance.MarkCell(Enums.CellOption.EmptyCell, 1);
+            var cell = gameBoardInstance.Board[0, 0];
+            cell.MarkCell(Enums.CellOption.NoughtCell);
+
+            Assert.IsTrue(cell.GetCellState() == Enums.CellOption.NoughtCell);
         }
     }
 }

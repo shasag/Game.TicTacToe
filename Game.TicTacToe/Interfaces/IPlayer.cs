@@ -7,8 +7,8 @@ namespace Game.TicTacToe.Interfaces
 {
     public interface IPlayer
     {
-        CellOption PreferredSymbol { get; set; }
-        string Name { get; set; }
+        CellOption PreferredSymbol { get; }
+        string Name { get; }
 
         public int TakeTurn();
     }

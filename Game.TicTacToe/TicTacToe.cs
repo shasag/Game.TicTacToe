@@ -7,59 +7,87 @@ namespace Game.TicTacToe
 {
     public class TicTacToe
     {
+        public string ErrorMessage { get; set; }
         public TicTacToe()
         {
             StartGame();
         }
-
         private void StartGame()
         {
             GameBoard gameBoard = new GameBoard();
             IPlayer playerX = InitializeHumanUser(gameBoard, 1);
-            Console.WriteLine($"Play Type : \n1. 2-Player \n2. Play with computer");
+            Console.WriteLine($"Play Type : \nPress 1 for 2-Player game\n" +
+                                              "Press any other key to play with computer");
             var type = Console.ReadLine();
             IPlayer playerY;
             if(type == "1")
                 playerY = InitializeHumanUser(gameBoard, 2);
             else
-                playerY = InitializeHumanUser(gameBoard, 2);
+                playerY = InitializeAIUser(gameBoard, 2);
             Console.Clear();
             gameBoard.CurrentPlayer = playerX;
-            gameBoard.MoveCounter = 0;
             bool play = true;
             while (play)
             {
                 gameBoard.DisplayBoard();
+                if (!string.IsNullOrWhiteSpace(ErrorMessage))
+                {
+                    Console.WriteLine(ErrorMessage);
+                    ErrorMessage = string.Empty;
+                }
                 Console.WriteLine($"Player : {gameBoard.CurrentPlayer.Name} Enter the field in which you want to put character: ");
                 try
                 {
-                    gameBoard.MarkCell(gameBoard.CurrentPlayer, gameBoard.CurrentPlayer.TakeTurn());
-                    gameBoard.ClearBoard();
-                    gameBoard.MoveCounter++;
+                    var turnValue = gameBoard.CurrentPlayer.TakeTurn();
 
-                    if (gameBoard.CheckWin())
+                    if (turnValue > GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE)
                     {
-                        Console.WriteLine($"Player {gameBoard.CurrentPlayer.Name} with symbol {gameBoard.CurrentPlayer.PreferredSymbol} has won !!");
-                        gameBoard.DisplayBoard();
-                        play = false;
+                        ErrorMessage = "Invalid entry. Try again!!";
+                        Console.Clear();
+                        continue;
                     }
-                    else if (gameBoard.CheckDraw())
+                    else if (!gameBoard.IsCellEmpty(turnValue)) 
                     {
-                        Console.WriteLine($"GAME DRAW");
-                        gameBoard.DisplayBoard();
-                        play = false;
+                        ErrorMessage = "The cell poisition is already played. Try again!!";
+                        Console.Clear();
+                        continue;
                     }
+                    else
+                    {
+                        gameBoard.MarkCell(gameBoard.CurrentPlayer.PreferredSymbol, turnValue);
+                        gameBoard.ClearBoard();
 
-                    gameBoard.ChangePlayer(playerX, playerY);
+                        if (gameBoard.CheckWin())
+                        {
+                            Console.WriteLine($"Player {gameBoard.CurrentPlayer.Name} with symbol {gameBoard.CurrentPlayer.PreferredSymbol} has won !!");
+                            gameBoard.DisplayBoard();
+                            play = false;
+                        }
+                        else if (gameBoard.CheckDraw())
+                        {
+                            Console.WriteLine($"GAME DRAW");
+                            gameBoard.DisplayBoard();
+                            play = false;
+                        }
+
+                        gameBoard.ChangePlayer(playerX, playerY);
+                    }
 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Console.WriteLine(ex);
                     Console.WriteLine("Invalid Input");
                     Console.ReadLine();
                     Console.Clear();
                 }
             }
+        }
+
+        private IPlayer InitializeAIUser(GameBoard gameBoard, int v)
+        {
+            Console.Clear();
+            return new AIPlayer(gameBoard);
         }
 
         private IPlayer InitializeHumanUser(GameBoard gameBoard, int i)
