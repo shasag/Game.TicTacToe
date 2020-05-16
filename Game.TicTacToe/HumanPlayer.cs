@@ -1,4 +1,5 @@
-﻿using Game.TicTacToe.Interfaces;
+﻿using Game.TicTacToe.Enums;
+using Game.TicTacToe.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,13 +9,16 @@ namespace Game.TicTacToe
     public class HumanPlayer : IPlayer
     {
 
-        public char PreferredSymbol { get; set; }
+        public CellOption PreferredSymbol { get; set; }
         public string Name { get; set; }
 
         public HumanPlayer(string name, char symbol)
         {
             Name = name;
-            PreferredSymbol = symbol;
+            if (symbol == 'X')
+                PreferredSymbol = CellOption.CrossCell;
+            else
+                PreferredSymbol = CellOption.NoughtCell;
         }
 
         public int TakeTurn()

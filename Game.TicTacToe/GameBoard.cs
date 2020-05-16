@@ -11,7 +11,9 @@ namespace Game.TicTacToe
     {
         public const int BOARD_SIZE = 3;
 
-        public Cell[,] Board;
+        public Cell[,] Board { get; set; }
+
+        public IPlayer CurrentPlayer { get; set; }
 
         public GameBoard()
         {
@@ -61,6 +63,26 @@ namespace Game.TicTacToe
         public void ClearBoard()
         {
             Console.Clear();
+        }
+
+        public CellOption GetOpponentSymbol(CellOption currentPlayerSymbol)
+        {
+            if (currentPlayerSymbol == CellOption.CrossCell)
+                return CellOption.NoughtCell;
+            else
+                return CellOption.CrossCell;
+        }
+
+        public void ChangePlayer(IPlayer playerX, IPlayer playerY)
+        {
+            if (CurrentPlayer == playerX)
+            {
+                CurrentPlayer = playerY;
+            }
+            else
+            {
+                CurrentPlayer = playerX;
+            }
         }
 
         public bool CheckDraw(int moveCounter)

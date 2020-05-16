@@ -19,22 +19,22 @@ namespace Game.TicTacToe
             IPlayer playerX = InitializeHumanUser(gameBoard, 1);
             IPlayer playerY = InitializeHumanUser(gameBoard, 2);
             Console.Clear();
-            IPlayer currentPlayer = playerX;
+            gameBoard.CurrentPlayer = playerX;
             bool play = true;
             int moveCounter = 0;
             while (play)
             {
                 gameBoard.DisplayBoard();
-                Console.WriteLine($"Player : {currentPlayer.Name} Enter the field in which you want to put character: ");
+                Console.WriteLine($"Player : {gameBoard.CurrentPlayer.Name} Enter the field in which you want to put character: ");
                 try
                 {
-                    gameBoard.MarkCell(currentPlayer, currentPlayer.TakeTurn());
+                    gameBoard.MarkCell(gameBoard.CurrentPlayer, gameBoard.CurrentPlayer.TakeTurn());
                     gameBoard.ClearBoard();
                     moveCounter++;
 
                     if (gameBoard.CheckWin())
                     {
-                        Console.WriteLine($"Player {currentPlayer.Name} with symbol {currentPlayer.PreferredSymbol} has won !!");
+                        Console.WriteLine($"Player {gameBoard.CurrentPlayer.Name} with symbol {gameBoard.CurrentPlayer.PreferredSymbol} has won !!");
                         gameBoard.DisplayBoard();
                         play = false;
                     }
@@ -45,7 +45,7 @@ namespace Game.TicTacToe
                         play = false;
                     }
 
-                    currentPlayer = ChangePlayer(currentPlayer, playerX, playerY);
+                    gameBoard.ChangePlayer(playerX, playerY);
 
                 }
                 catch (Exception)
@@ -67,11 +67,6 @@ namespace Game.TicTacToe
             Console.WriteLine($"Player {i} Name with symbol ({prefSymbol}): ");
             var name = Console.ReadLine();
             return new HumanPlayer(name, prefSymbol);
-        }
-
-        private IPlayer ChangePlayer(IPlayer currentPlayer, IPlayer playerX, IPlayer playerY)
-        {
-            return currentPlayer == playerX ? playerY : playerX;
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Game.TicTacToe
         {
             if (IsEmpty())
             {
-                if (player.PreferredSymbol == 'X')
+                if (player.PreferredSymbol == CellOption.CrossCell)
                     cellState = CellOption.CrossCell;
                 else
                     cellState = CellOption.NoughtCell;
