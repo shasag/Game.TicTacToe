@@ -1,6 +1,8 @@
 using Game.TicTacToe.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Game.TicTacToe.Tests
 {
@@ -149,7 +151,61 @@ namespace Game.TicTacToe.Tests
         }
 
         [TestMethod]
-        public void GetOpponentSymbolForXTest()
+        public void AvailableMoveTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
+            var testPlayerY = new HumanPlayer("TestPlayerY", 'O');
+            gameBoardInstance.MarkCell(testPlayerX, 1);
+            gameBoardInstance.MarkCell(testPlayerY, 2);
+            gameBoardInstance.MarkCell(testPlayerX, 3);
+            gameBoardInstance.MarkCell(testPlayerY, 4);
+            gameBoardInstance.MarkCell(testPlayerX, 5);
+            gameBoardInstance.MarkCell(testPlayerY, 6);
+            gameBoardInstance.MarkCell(testPlayerY, 7);
+            var expectedList = new List<int> { 8, 9};
+            var actualList = gameBoardInstance.GetAvailableMoves().ToList();
+            Assert.IsFalse(expectedList.Except(actualList).Any());
+            Assert.IsFalse(actualList.Except(expectedList).Any());
+        }
+
+        [TestMethod]
+        public void BackTrackMovetest()
+        {
+            var gameBoardInstance = new GameBoard();
+            var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
+            gameBoardInstance.MarkCell(testPlayerX, 1);
+            gameBoardInstance.MarkCell(testPlayerX, 2);
+            gameBoardInstance.MarkCell(testPlayerX, 9);
+            gameBoardInstance.BackTrackMove();
+            var expectedList = new List<int>() { 3, 4, 5, 6, 7, 8, 9 };
+            var actualList = gameBoardInstance.GetAvailableMoves().ToList();
+            Assert.IsFalse(expectedList.Except(actualList).Any());
+            Assert.IsFalse(actualList.Except(expectedList).Any());
+        }
+
+        [TestMethod]
+        public void ChekMoveRemainingTest()
+        {
+            var gameBoardInstance = new GameBoard();
+
+            gameBoardInstance.MoveCounter = GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE - 3;
+
+            Assert.AreEqual(gameBoardInstance.IsMoveRemaining(), true);
+        }
+
+        [TestMethod]
+        public void ChekMoveNotRemainingTest()
+        {
+            var gameBoardInstance = new GameBoard();
+
+            gameBoardInstance.MoveCounter = GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE;
+
+            Assert.AreEqual(gameBoardInstance.IsMoveRemaining(), false);
+        }
+
+        [TestMethod]
+        public void GetOpponentSymbolForPlayerXTest()
         {
             var gameBoardInstance = new GameBoard();
             var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
@@ -160,7 +216,7 @@ namespace Game.TicTacToe.Tests
         }
 
         [TestMethod]
-        public void GetOpponentSymbolForYTest()
+        public void GetOpponentSymbolForPlayerYTest()
         {
             var gameBoardInstance = new GameBoard();
             var testPlayerX = new HumanPlayer("TestPlayerX", 'X');

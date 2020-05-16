@@ -17,8 +17,11 @@ namespace Game.TicTacToe
 
         public int MoveCounter { get; set; }
 
+        private Stack<Cell> _moveStack;
+
         public GameBoard()
         {
+            _moveStack = new Stack<Cell>();
             InitializeBoard();
         }
 
@@ -29,7 +32,7 @@ namespace Game.TicTacToe
             {
                 for (int j = 0; j < BOARD_SIZE; j++)
                 {
-                    Board[i, j] = new Cell();
+                    Board[i, j] = new Cell(i, j);
                 }
             }
         }
@@ -87,16 +90,34 @@ namespace Game.TicTacToe
             }
         }
 
+        public IEnumerable<int> GetAvailableMoves()
+        {
+            for (int i = 0; i < BOARD_SIZE; i++)
+            {
+                for (int j = 0; j < BOARD_SIZE; j++)
+                {
+                    if (Board[i, j].IsEmpty())
+                        yield return (i * BOARD_SIZE + j + 1);
+                }
+            }
+        }
+
+        public void BackTrackMove()
+        {
+            var popedCell = _moveStack.Pop();
+            Board[popedCell.Row, popedCell.Col].ResetCell();
+        }
+
         public bool CheckDraw()
         {
-            return IsMoveRemaining();
+            return IsMoveRemaining() ? false : true;
         }
 
         public bool IsMoveRemaining()
         {
             if (MoveCounter == BOARD_SIZE * BOARD_SIZE)
-                return true;
-            return false;
+                return false;
+            return true;
         }
 
         public void MarkCell(IPlayer player, int cNum)
@@ -104,9 +125,15 @@ namespace Game.TicTacToe
             int yPos = (cNum - 1) / BOARD_SIZE;
             int xPos = (cNum - 1) % BOARD_SIZE;
 
-            if (Board[yPos, xPos].IsEmpty())
+            if (cNum > BOARD_SIZE * BOARD_SIZE)
+            {
+                Console.WriteLine("Invalid entry. Try again!!");
+                MarkCell(player, player.TakeTurn());
+            }
+            else if (Board[yPos, xPos].IsEmpty())
             {
                 Board[yPos, xPos].MarkCell(player);
+                _moveStack.Push(Board[yPos, xPos]);
             }
             else
             {
