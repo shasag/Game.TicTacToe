@@ -47,6 +47,18 @@ namespace Game.TicTacToe.Tests
         }
 
         [TestMethod]
+        public void ChangePlayerToXNegativeTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
+            var testPlayerO = new HumanPlayer("TestPlayerO", 'O');
+            gameBoardInstance.CurrentPlayer = testPlayerO;
+            gameBoardInstance.ChangePlayer(testPlayerX, testPlayerO);
+
+            Assert.AreNotEqual(gameBoardInstance.CurrentPlayer, testPlayerO);
+        }
+
+        [TestMethod]
         public void CheckWinRowTest()
         {
             //First row same
@@ -56,6 +68,17 @@ namespace Game.TicTacToe.Tests
             gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 2);
             gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 3);
             Assert.AreEqual(gameBoardInstance.CheckWin(), true);
+        }
+
+        [TestMethod]
+        public void CheckNotWinRowTest()
+        {
+            //First row same
+            var gameBoardInstance = new GameBoard();
+            var testPlayer = new HumanPlayer("TestPlayer", 'X');
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 1);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 2);
+            Assert.AreEqual(gameBoardInstance.CheckWin(), false);
         }
 
         [TestMethod]
@@ -127,6 +150,18 @@ namespace Game.TicTacToe.Tests
             gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 5);
             gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 9);
             Assert.AreEqual(gameBoardInstance.CheckWin(), true);
+        }
+
+        [TestMethod]
+        public void CheckNotWinLeftDigonalTest()
+        {
+            //First row same
+            var gameBoardInstance = new GameBoard();
+            var testPlayer = new HumanPlayer("TestPlayer", 'X');
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 1);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 5);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 6);
+            Assert.AreEqual(gameBoardInstance.CheckWin(), false);
         }
 
         [TestMethod]
@@ -398,6 +433,67 @@ namespace Game.TicTacToe.Tests
             cell.MarkCell(Enums.CellOption.NoughtCell);
 
             Assert.IsTrue(cell.GetCellState() == Enums.CellOption.NoughtCell);
+        }
+
+        [TestMethod]
+        public void StartGameTest()
+        {
+            var ticTacToeInstance = new TicTacToe();
+            ticTacToeInstance.PlayerO = null;
+
+            var currentConsoleOut = Console.Out;
+
+            using (var consoleOutput = new ConsoleOutput())
+            {
+                ticTacToeInstance.StartGame();
+                Assert.AreEqual(consoleOutput.GetOuput().ToString().Trim() == string.Empty, true);
+            }
+        }
+
+        [TestMethod]
+        public void StartGameAIUserWinTest()
+        {
+            var ticTacToeInstance = new TicTacToe();
+            ticTacToeInstance.GameBoard = new GameBoard();
+            ticTacToeInstance.PlayerX = new HumanPlayer("TestPlayerX", 'X');
+            ticTacToeInstance.PlayerO = new AIPlayer(ticTacToeInstance.GameBoard);
+
+            ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerX.PreferredSymbol, 2);
+            ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerO.PreferredSymbol, 1);
+            ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerX.PreferredSymbol, 5);
+            ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerO.PreferredSymbol, 4);
+            ticTacToeInstance.GameBoard.CurrentPlayer = ticTacToeInstance.PlayerO;
+
+            using (var consoleOutput = new ConsoleOutput())
+            {
+                ticTacToeInstance.StartGame();
+                Assert.AreEqual(consoleOutput.GetOuput().ToString().Trim().Contains("won"), true);
+            }
+        }
+
+        [TestMethod]
+        public void StartGameAIUserDrawTest()
+        {
+            var ticTacToeInstance = new TicTacToe();
+            ticTacToeInstance.GameBoard = new GameBoard();
+            ticTacToeInstance.PlayerX = new HumanPlayer("TestPlayerX", 'X');
+            ticTacToeInstance.PlayerO = new AIPlayer(ticTacToeInstance.GameBoard);
+
+            ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerO.PreferredSymbol, 1);
+            ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerX.PreferredSymbol, 2);
+            ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerO.PreferredSymbol, 5);
+            ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerX.PreferredSymbol, 4);
+            ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerO.PreferredSymbol, 6);
+            ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerX.PreferredSymbol, 3);
+            ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerO.PreferredSymbol, 7);
+            ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerX.PreferredSymbol, 9);
+            ticTacToeInstance.GameBoard.CurrentPlayer = ticTacToeInstance.PlayerO;
+
+            using (var consoleOutput = new ConsoleOutput())
+            {
+                ticTacToeInstance.StartGame();
+                Assert.AreEqual(consoleOutput.GetOuput().ToString().Trim().Contains("DRAW"), true);
+            }
         }
     }
 }

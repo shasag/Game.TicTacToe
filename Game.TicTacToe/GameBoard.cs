@@ -17,23 +17,6 @@ namespace Game.TicTacToe
 
         private Stack<Cell> _moveStack;
 
-        public override string ToString()
-        {
-            string str = "";
-            for(int i = 0; i < BOARD_SIZE; i++)
-            {
-                for(int j = 0; j < BOARD_SIZE; j++)
-                {
-                    switch(Board[i, j].GetCellState())
-                    {
-                        case CellOption.CrossCell: str += "X";break;
-                        case CellOption.NoughtCell: str += "O"; break;
-                        case CellOption.EmptyCell: str += "-"; break;
-                    }
-                }
-            }
-            return str;
-        }
         public GameBoard()
         {
             _moveStack = new Stack<Cell>();
@@ -205,8 +188,6 @@ namespace Game.TicTacToe
                 return false;
             else
                 return true;
-             
-
         }
 
         private bool checkDigonals(int boardSize)

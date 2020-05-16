@@ -8,37 +8,45 @@ namespace Game.TicTacToe
     public class TicTacToe
     {
         public string ErrorMessage { get; set; }
+        public IPlayer PlayerX { get; set; }
+        public IPlayer PlayerO { get; set; }
+        public GameBoard GameBoard { get; set; }
+
         public TicTacToe()
         {
-            StartGame();
+            //StartGame();
         }
-        private void StartGame()
+
+        public void InitalizeInputs()
         {
-            GameBoard gameBoard = new GameBoard();
-            IPlayer playerX = InitializeHumanUser(gameBoard, 1);
+            GameBoard = new GameBoard();
+            PlayerX = InitializeHumanUser(GameBoard, 1);
             Console.WriteLine($"Play Type : \nPress 1 for 2-Player game\n" +
                                               "Press any other key to play with computer");
             var type = Console.ReadLine();
-            IPlayer playerY;
-            if(type == "1")
-                playerY = InitializeHumanUser(gameBoard, 2);
+            if (type == "1")
+                PlayerO = InitializeHumanUser(GameBoard, 2);
             else
-                playerY = InitializeAIUser(gameBoard, 2);
+                PlayerO = InitializeAIUser(GameBoard, 2);
             Console.Clear();
-            gameBoard.CurrentPlayer = playerX;
-            bool play = true;
+            GameBoard.CurrentPlayer = PlayerX;
+        }
+
+        public void StartGame()
+        {
+            bool play = PlayerX != null && PlayerO != null ? true : false;
             while (play)
             {
-                gameBoard.DisplayBoard();
+                GameBoard.DisplayBoard();
                 if (!string.IsNullOrWhiteSpace(ErrorMessage))
                 {
                     Console.WriteLine(ErrorMessage);
                     ErrorMessage = string.Empty;
                 }
-                Console.WriteLine($"Player : {gameBoard.CurrentPlayer.Name} Enter the field in which you want to put character: ");
+                Console.WriteLine($"Player : {GameBoard.CurrentPlayer.Name} Enter the field in which you want to put character: ");
                 try
                 {
-                    var turnValue = gameBoard.CurrentPlayer.TakeTurn();
+                    var turnValue = GameBoard.CurrentPlayer.TakeTurn();
 
                     if (turnValue > GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE)
                     {
@@ -46,7 +54,7 @@ namespace Game.TicTacToe
                         Console.Clear();
                         continue;
                     }
-                    else if (!gameBoard.IsCellEmpty(turnValue)) 
+                    else if (!GameBoard.IsCellEmpty(turnValue)) 
                     {
                         ErrorMessage = "The cell poisition is already played. Try again!!";
                         Console.Clear();
@@ -54,23 +62,23 @@ namespace Game.TicTacToe
                     }
                     else
                     {
-                        gameBoard.MarkCell(gameBoard.CurrentPlayer.PreferredSymbol, turnValue);
-                        gameBoard.ClearBoard();
+                        GameBoard.MarkCell(GameBoard.CurrentPlayer.PreferredSymbol, turnValue);
+                        GameBoard.ClearBoard();
 
-                        if (gameBoard.CheckWin())
+                        if (GameBoard.CheckWin())
                         {
-                            Console.WriteLine($"Player {gameBoard.CurrentPlayer.Name} with symbol {gameBoard.CurrentPlayer.PreferredSymbol} has won !!");
-                            gameBoard.DisplayBoard();
+                            Console.WriteLine($"Player {GameBoard.CurrentPlayer.Name} with symbol {GameBoard.CurrentPlayer.PreferredSymbol} has won !!");
+                            GameBoard.DisplayBoard();
                             play = false;
                         }
-                        else if (gameBoard.CheckDraw())
+                        else if (GameBoard.CheckDraw())
                         {
                             Console.WriteLine($"GAME DRAW");
-                            gameBoard.DisplayBoard();
+                            GameBoard.DisplayBoard();
                             play = false;
                         }
 
-                        gameBoard.ChangePlayer(playerX, playerY);
+                        GameBoard.ChangePlayer(PlayerX, PlayerO);
                     }
 
                 }
@@ -84,19 +92,19 @@ namespace Game.TicTacToe
             }
         }
 
-        private IPlayer InitializeAIUser(GameBoard gameBoard, int v)
+        private IPlayer InitializeAIUser(GameBoard GameBoard, int v)
         {
             Console.Clear();
-            return new AIPlayer(gameBoard);
+            return new AIPlayer(GameBoard);
         }
 
-        private IPlayer InitializeHumanUser(GameBoard gameBoard, int i)
+        private IPlayer InitializeHumanUser(GameBoard GameBoard, int i)
         {
             Console.Clear();
             var prefSymbol = 'X';
             if (i == 2)
                 prefSymbol = 'O';
-            gameBoard.DisplayBoard();
+            GameBoard.DisplayBoard();
             Console.WriteLine($"Player {i} Name with symbol ({prefSymbol}): ");
             var name = Console.ReadLine();
             return new HumanPlayer(name, prefSymbol);
