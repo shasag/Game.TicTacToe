@@ -39,7 +39,7 @@ namespace Game.TicTacToe
             int cellNumber = 1;
             for (int i = 0; i < BOARD_SIZE; i++)
             {
-                Console.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("    |", BOARD_SIZE -1)), "    "));
+                Console.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("   |", BOARD_SIZE -1)), "   "));
                 for (int j = 0; j < BOARD_SIZE; j++)
                 {
                     if (Board[i, j].IsEmpty())
@@ -49,13 +49,13 @@ namespace Game.TicTacToe
                     cellNumber++;
 
                     if (j < BOARD_SIZE - 1)
-                        Console.Write(" |");
+                        Console.Write("|");
                 }
                 Console.Write("\n");
                 if (i < BOARD_SIZE - 1)
-                    Console.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("____|", BOARD_SIZE - 1)), "____"));
+                    Console.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("___|", BOARD_SIZE - 1)), "___"));
                 else if (i == BOARD_SIZE - 1)
-                    Console.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("    |", BOARD_SIZE - 1)), "    "));
+                    Console.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("   |", BOARD_SIZE - 1)), "   "));
             }
             Console.WriteLine();
         }
