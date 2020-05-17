@@ -11,6 +11,7 @@ namespace Game.TicTacToe
         public IPlayer PlayerX { get; set; }
         public IPlayer PlayerO { get; set; }
         public GameBoard GameBoard { get; set; }
+        public bool Play { get; set; }
 
         public TicTacToe()
         {
@@ -20,12 +21,13 @@ namespace Game.TicTacToe
         public void InitalizeInputs()
         {
             GameBoard = new GameBoard();
-            PlayerX = InitializeHumanUser(GameBoard, 1);
+            PlayerX = GetHumanUser(GameBoard, 1);
             Console.WriteLine($"Play Type : \nPress 1 for 2-Player game\n" +
                                               "Press any other key to play with computer");
             var type = Console.ReadLine();
             if (type == "1")
-                PlayerO = InitializeHumanUser(GameBoard, 2);
+
+                PlayerO = GetHumanUser(GameBoard, 2);
             else
                 PlayerO = InitializeAIUser(GameBoard, 2);
             Console.Clear();
@@ -34,8 +36,8 @@ namespace Game.TicTacToe
 
         public void StartGame()
         {
-            bool play = PlayerX != null && PlayerO != null ? true : false;
-            while (play)
+            Play = (PlayerX != null && PlayerO != null) ? true : false;
+            while (Play)
             {
                 GameBoard.DisplayBoard();
                 if (!string.IsNullOrWhiteSpace(ErrorMessage))
@@ -48,15 +50,9 @@ namespace Game.TicTacToe
                 {
                     var turnValue = GameBoard.CurrentPlayer.TakeTurn();
 
-                    if (turnValue > GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE)
+                    if (!GameBoard.IsValidMove(turnValue))
                     {
-                        ErrorMessage = "Invalid entry. Try again!!";
-                        Console.Clear();
-                        continue;
-                    }
-                    else if (!GameBoard.IsCellEmpty(turnValue)) 
-                    {
-                        ErrorMessage = "The cell poisition is already played. Try again!!";
+                        ErrorMessage = "Invalid entry / move already played. Try again!!";
                         Console.Clear();
                         continue;
                     }
@@ -69,13 +65,13 @@ namespace Game.TicTacToe
                         {
                             Console.WriteLine($"Player {GameBoard.CurrentPlayer.Name} with symbol {GameBoard.CurrentPlayer.PreferredSymbol} has won !!");
                             GameBoard.DisplayBoard();
-                            play = false;
+                            Play = false;
                         }
                         else if (GameBoard.CheckDraw())
                         {
                             Console.WriteLine($"GAME DRAW");
                             GameBoard.DisplayBoard();
-                            play = false;
+                            Play = false;
                         }
 
                         GameBoard.ChangePlayer(PlayerX, PlayerO);
@@ -92,22 +88,29 @@ namespace Game.TicTacToe
             }
         }
 
-        private IPlayer InitializeAIUser(GameBoard GameBoard, int v)
+        public IPlayer InitializeAIUser(GameBoard GameBoard, int v)
         {
             Console.Clear();
             return new AIPlayer(GameBoard);
         }
 
-        private IPlayer InitializeHumanUser(GameBoard GameBoard, int i)
+        public IPlayer InitializeHumanUser(GameBoard GameBoard, string name, int i)
+        {
+            return new HumanPlayer(name, GetSymbolForPlayer(i));
+        }
+
+        private IPlayer GetHumanUser(GameBoard GameBoard, int i)
         {
             Console.Clear();
-            var prefSymbol = 'X';
-            if (i == 2)
-                prefSymbol = 'O';
             GameBoard.DisplayBoard();
-            Console.WriteLine($"Player {i} Name with symbol ({prefSymbol}): ");
+            Console.WriteLine($"Player {i} Name with symbol ({GetSymbolForPlayer(i)}): ");
             var name = Console.ReadLine();
-            return new HumanPlayer(name, prefSymbol);
+            return InitializeHumanUser(GameBoard, name, i);
+        }
+
+        public char GetSymbolForPlayer(int i)
+        {
+            return (i == 1 ? 'X' : 'O');
         }
     }
 }

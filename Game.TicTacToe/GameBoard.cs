@@ -116,6 +116,20 @@ namespace Game.TicTacToe
             return _moveStack.Count() < BOARD_SIZE * BOARD_SIZE;
         }
 
+        public bool IsValidMove(int moveValue)
+        {
+            var isValidMove = true;
+            if (moveValue > GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE || moveValue < 1)
+            {
+                isValidMove = false;
+            }
+            else if (!IsCellEmpty(moveValue))
+            {
+                isValidMove = false;
+            }
+            return isValidMove;
+        }
+
         public bool IsCellEmpty(int cNum)
         {
             int xPos = (cNum - 1) / BOARD_SIZE;

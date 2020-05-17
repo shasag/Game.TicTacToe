@@ -23,6 +23,29 @@ namespace Game.TicTacToe.Tests
         }
 
         [TestMethod]
+        public void IsInValidMoveOutsideBoundsTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            Assert.AreEqual(gameBoardInstance.IsValidMove(10), false);
+        }
+
+        [TestMethod]
+        public void IsValidMoveOutsideBoundsTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            Assert.AreEqual(gameBoardInstance.IsValidMove(9), true);
+        }
+
+        [TestMethod]
+        public void IsInValidMoveAlreadyOccupiedTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            var testPlayer = new HumanPlayer("TestPlayer", 'X');
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 1);
+            Assert.AreEqual(gameBoardInstance.IsValidMove(1), false);
+        }
+
+        [TestMethod]
         public void ChangePlayerToOTest()
         {
             var gameBoardInstance = new GameBoard();
@@ -91,6 +114,17 @@ namespace Game.TicTacToe.Tests
             gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 4);
             gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 7);
             Assert.AreEqual(gameBoardInstance.CheckWin(), true);
+        }
+
+        [TestMethod]
+        public void CheckNotWinColumnTest()
+        {
+            //First row same
+            var gameBoardInstance = new GameBoard();
+            var testPlayer = new HumanPlayer("TestPlayer", 'X');
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 1);
+            gameBoardInstance.MarkCell(testPlayer.PreferredSymbol, 4);
+            Assert.AreEqual(gameBoardInstance.CheckWin(), false);
         }
 
         [TestMethod]
@@ -494,6 +528,32 @@ namespace Game.TicTacToe.Tests
                 ticTacToeInstance.StartGame();
                 Assert.AreEqual(consoleOutput.GetOuput().ToString().Trim().Contains("DRAW"), true);
             }
+        }
+
+        [TestMethod]
+        public void InitalizeAIUserTest()
+        {
+            var ticTacToeInstance = new TicTacToe();
+            ticTacToeInstance.GameBoard = new GameBoard();
+            var aiUserTest = ticTacToeInstance.InitializeAIUser(ticTacToeInstance.GameBoard, 0);
+            Assert.IsTrue(aiUserTest != null);
+        }
+
+        [TestMethod]
+        public void InitalizeHumanUserTest()
+        {
+            var ticTacToeInstance = new TicTacToe();
+            ticTacToeInstance.GameBoard = new GameBoard();
+            var humanUserTest = ticTacToeInstance.InitializeHumanUser(ticTacToeInstance.GameBoard, "TestUser", 0);
+            Assert.IsTrue(humanUserTest != null);
+        }
+
+        [TestMethod]
+        public void CharSymbolTest()
+        {
+            var ticTacToeInstance = new TicTacToe();
+            var testSymbol = ticTacToeInstance.GetSymbolForPlayer(1);
+            Assert.IsTrue(testSymbol == 'X');
         }
     }
 }
