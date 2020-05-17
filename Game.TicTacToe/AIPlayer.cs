@@ -17,11 +17,14 @@ namespace Game.TicTacToe
         public string Name { get; private set; }
         public GameBoard Board { get; private set; }
 
-        public AIPlayer(GameBoard board)
+        public AIPlayer(GameBoard board, char symbol)
         {
             Name = "AI Player";
             Board = board;
-            PreferredSymbol = CellOption.NoughtCell;
+            if (symbol == 'X')
+                PreferredSymbol = CellOption.CrossCell;
+            else
+                PreferredSymbol = CellOption.NoughtCell;
         }
 
         public int TakeTurn()

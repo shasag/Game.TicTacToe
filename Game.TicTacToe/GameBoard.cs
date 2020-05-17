@@ -159,8 +159,6 @@ namespace Game.TicTacToe
         private bool checkDigonalsForWin()
         {
             return checkDigonals(BOARD_SIZE);
-            //return checkPattern(Board[0, 0].GetCellState(), Board[1, 1].GetCellState(), Board[2, 2].GetCellState()) ||
-            //    checkPattern(Board[2, 0].GetCellState(), Board[1, 1].GetCellState(), Board[0, 2].GetCellState());
         }
 
         private bool checkColumnsForWin()
@@ -168,7 +166,6 @@ namespace Game.TicTacToe
             for (int i = 0; i < BOARD_SIZE; i++)
             {
                 if (checkPattern(false, i, BOARD_SIZE))
-                    //if (checkPattern(Board[0, i].GetCellState(), Board[1, i].GetCellState(), Board[2, i].GetCellState()))
                     return true;
 
             }
@@ -180,7 +177,6 @@ namespace Game.TicTacToe
             for (int i = 0; i < BOARD_SIZE; i++)
             {
                 if(checkPattern(true, i, BOARD_SIZE))
-                //if (checkPattern(Board[i, 0].GetCellState(), Board[i, 1].GetCellState(), Board[i, 2].GetCellState()))
                     return true;
 
             }
@@ -233,12 +229,6 @@ namespace Game.TicTacToe
 
             return retValLeft || retValRight;
         }
-
-        //private bool checkPattern(CellOption cellOption1, CellOption cellOption2, CellOption cellOption3)
-        //{
-        //    return cellOption1 != CellOption.EmptyCell && cellOption2 != CellOption.EmptyCell && cellOption3 != CellOption.EmptyCell
-        //            && cellOption1 == cellOption2 && cellOption2 == cellOption3;
-        //}
 
         #endregion
     }

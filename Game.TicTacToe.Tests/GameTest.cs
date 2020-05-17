@@ -336,7 +336,7 @@ namespace Game.TicTacToe.Tests
         {
             var gameBoardInstance = new GameBoard();
             var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
-            var testPlayerO = new AIPlayer(gameBoardInstance);
+            var testPlayerO = new AIPlayer(gameBoardInstance, 'O');
             gameBoardInstance.MarkCell(testPlayerO.PreferredSymbol, 2);
             gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 1);
             gameBoardInstance.MarkCell(testPlayerO.PreferredSymbol, 5);
@@ -349,16 +349,24 @@ namespace Game.TicTacToe.Tests
         public void AIPlayer_ConstructurTest()
         {
             var gameBoardInstance = new GameBoard();
-            AIPlayer player = new Mock<AIPlayer>(gameBoardInstance).Object;
+            AIPlayer player = new Mock<AIPlayer>(gameBoardInstance, 'O').Object;
 
             Assert.AreEqual(player.Name, "AI Player");
         }
 
         [TestMethod]
-        public void HumanPlayer_ConstructurTes5()
+        public void AIPlayer_ConstructorXTest()
+        {
+            var gameBoardInstance = new GameBoard();
+            AIPlayer player = new Mock<AIPlayer>(gameBoardInstance, 'X').Object;
+
+            Assert.AreEqual(player.Name, "AI Player");
+        }
+
+        [TestMethod]
+        public void HumanPlayer_ConstructorXTest()
         {
             HumanPlayer player = new Mock<HumanPlayer>("Test", 'X').Object;
-
             Assert.AreEqual(player.Name, "Test");
         }
 
@@ -383,7 +391,7 @@ namespace Game.TicTacToe.Tests
         {
             var gameBoardInstance = new GameBoard();
             var testPlayerX = new HumanPlayer("TestPlayerX", 'X');
-            var testPlayerO = new AIPlayer(gameBoardInstance);
+            var testPlayerO = new AIPlayer(gameBoardInstance, 'O');
             gameBoardInstance.MarkCell(testPlayerO.PreferredSymbol, 5);
             gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 1);
             gameBoardInstance.MarkCell(testPlayerO.PreferredSymbol, 3);
@@ -490,7 +498,7 @@ namespace Game.TicTacToe.Tests
             var ticTacToeInstance = new TicTacToe();
             ticTacToeInstance.GameBoard = new GameBoard();
             ticTacToeInstance.PlayerX = new HumanPlayer("TestPlayerX", 'X');
-            ticTacToeInstance.PlayerO = new AIPlayer(ticTacToeInstance.GameBoard);
+            ticTacToeInstance.PlayerO = new AIPlayer(ticTacToeInstance.GameBoard, 'O');
 
             ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerX.PreferredSymbol, 2);
             ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerO.PreferredSymbol, 1);
@@ -511,7 +519,7 @@ namespace Game.TicTacToe.Tests
             var ticTacToeInstance = new TicTacToe();
             ticTacToeInstance.GameBoard = new GameBoard();
             ticTacToeInstance.PlayerX = new HumanPlayer("TestPlayerX", 'X');
-            ticTacToeInstance.PlayerO = new AIPlayer(ticTacToeInstance.GameBoard);
+            ticTacToeInstance.PlayerO = new AIPlayer(ticTacToeInstance.GameBoard, 'O');
 
             ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerO.PreferredSymbol, 1);
             ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerX.PreferredSymbol, 2);
@@ -522,6 +530,25 @@ namespace Game.TicTacToe.Tests
             ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerO.PreferredSymbol, 7);
             ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerX.PreferredSymbol, 9);
             ticTacToeInstance.GameBoard.CurrentPlayer = ticTacToeInstance.PlayerO;
+            ticTacToeInstance.ErrorMessage = "This is test";
+
+            using (var consoleOutput = new ConsoleOutput())
+            {
+                ticTacToeInstance.StartGame();
+                Assert.AreEqual(consoleOutput.GetOuput().ToString().Trim().Contains("DRAW"), true);
+            }
+        }
+
+        [TestMethod]
+        public void StartGameAIUserDraw1Test()
+        {
+            var ticTacToeInstance = new TicTacToe();
+            ticTacToeInstance.GameBoard = new GameBoard();
+            ticTacToeInstance.PlayerX = new AIPlayer(ticTacToeInstance.GameBoard, 'X');
+            ticTacToeInstance.PlayerO = new AIPlayer(ticTacToeInstance.GameBoard, 'O');
+
+            //ticTacToeInstance.GameBoard.MarkCell(ticTacToeInstance.PlayerX.PreferredSymbol, 9);
+            ticTacToeInstance.GameBoard.CurrentPlayer = ticTacToeInstance.PlayerX;
 
             using (var consoleOutput = new ConsoleOutput())
             {
@@ -543,8 +570,7 @@ namespace Game.TicTacToe.Tests
         public void InitalizeHumanUserTest()
         {
             var ticTacToeInstance = new TicTacToe();
-            ticTacToeInstance.GameBoard = new GameBoard();
-            var humanUserTest = ticTacToeInstance.InitializeHumanUser(ticTacToeInstance.GameBoard, "TestUser", 0);
+            var humanUserTest = ticTacToeInstance.InitializeHumanUser("TestUser", 0);
             Assert.IsTrue(humanUserTest != null);
         }
 

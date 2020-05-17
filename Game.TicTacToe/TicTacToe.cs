@@ -13,11 +13,6 @@ namespace Game.TicTacToe
         public GameBoard GameBoard { get; set; }
         public bool Play { get; set; }
 
-        public TicTacToe()
-        {
-            //StartGame();
-        }
-
         public void InitalizeInputs()
         {
             GameBoard = new GameBoard();
@@ -26,11 +21,9 @@ namespace Game.TicTacToe
                                               "Press any other key to play with computer");
             var type = Console.ReadLine();
             if (type == "1")
-
                 PlayerO = GetHumanUser(GameBoard, 2);
             else
                 PlayerO = InitializeAIUser(GameBoard, 2);
-            Console.Clear();
             GameBoard.CurrentPlayer = PlayerX;
         }
 
@@ -39,6 +32,7 @@ namespace Game.TicTacToe
             Play = (PlayerX != null && PlayerO != null) ? true : false;
             while (Play)
             {
+                Console.Clear();
                 GameBoard.DisplayBoard();
                 if (!string.IsNullOrWhiteSpace(ErrorMessage))
                 {
@@ -53,7 +47,6 @@ namespace Game.TicTacToe
                     if (!GameBoard.IsValidMove(turnValue))
                     {
                         ErrorMessage = "Invalid entry / move already played. Try again!!";
-                        Console.Clear();
                         continue;
                     }
                     else
@@ -73,28 +66,24 @@ namespace Game.TicTacToe
                             GameBoard.DisplayBoard();
                             Play = false;
                         }
-
                         GameBoard.ChangePlayer(PlayerX, PlayerO);
                     }
-
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    Console.WriteLine(ex);
                     Console.WriteLine("Invalid Input");
                     Console.ReadLine();
-                    Console.Clear();
                 }
             }
         }
 
-        public IPlayer InitializeAIUser(GameBoard GameBoard, int v)
+        public IPlayer InitializeAIUser(GameBoard GameBoard, int i)
         {
             Console.Clear();
-            return new AIPlayer(GameBoard);
+            return new AIPlayer(GameBoard, GetSymbolForPlayer(i));
         }
 
-        public IPlayer InitializeHumanUser(GameBoard GameBoard, string name, int i)
+        public IPlayer InitializeHumanUser(string name, int i)
         {
             return new HumanPlayer(name, GetSymbolForPlayer(i));
         }
@@ -104,8 +93,7 @@ namespace Game.TicTacToe
             Console.Clear();
             GameBoard.DisplayBoard();
             Console.WriteLine($"Player {i} Name with symbol ({GetSymbolForPlayer(i)}): ");
-            var name = Console.ReadLine();
-            return InitializeHumanUser(GameBoard, name, i);
+            return InitializeHumanUser(Console.ReadLine(), i);
         }
 
         public char GetSymbolForPlayer(int i)
