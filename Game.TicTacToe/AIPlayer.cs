@@ -17,9 +17,9 @@ namespace Game.TicTacToe
         public string Name { get; private set; }
         public GameBoard Board { get; private set; }
 
-        public AIPlayer(GameBoard board, char symbol)
+        public AIPlayer(string name, GameBoard board, char symbol)
         {
-            Name = "AI Player";
+            Name = name;
             Board = board;
             if (symbol == 'X')
                 PreferredSymbol = CellOption.CrossCell;
@@ -29,9 +29,17 @@ namespace Game.TicTacToe
 
         public int TakeTurn()
         {
+            MovePrompt();
+
             int cellNumber = ComputeBestMove(MinMax.Max, 0, 0).Move;
             return cellNumber;
         }
+
+        private string MovePrompt()
+        {
+            return $"{Name}, select your move : ";
+        }
+
         private LevelResult ComputeBestMove(MinMax levelType, int depth, int lastMove)
         {
             var nextLevelType = MinMax.Min;

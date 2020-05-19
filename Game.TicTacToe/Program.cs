@@ -6,10 +6,8 @@ namespace Game.TicTacToe
     {
         static void Main(string[] args)
         {
-            TicTacToe ticTacToeGame = new TicTacToe();
-            ticTacToeGame.InitalizeInputs();
-            ticTacToeGame.StartGame();
-            Console.ReadLine();
+            var uiInteractor = new ConsoleInteractor(Console.In, Console.Out);
+            uiInteractor.Run();
         }
     }
 }

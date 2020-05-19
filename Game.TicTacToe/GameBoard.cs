@@ -13,12 +13,13 @@ namespace Game.TicTacToe
 
         public Cell[,] Board { get; set; }
 
-        public IPlayer CurrentPlayer { get; set; }
+        public CellOption CurrentSymbol { get; set; }
 
         private Stack<Cell> _moveStack;
 
         public GameBoard()
         {
+            CurrentSymbol = CellOption.CrossCell;
             _moveStack = new Stack<Cell>();
             InitializeBoard();
         }
@@ -35,37 +36,11 @@ namespace Game.TicTacToe
             }
         }
 
-        public void DisplayBoard()
+        public KeyValuePair<int, int> GetCoordinates(int cNum)
         {
-            //Using ASCII constant to ensure the single character in case we increase the dimension
-            const int ASCII_CODE_0 = 48;
-            int cellNumber = 1;
-            for (int i = 0; i < BOARD_SIZE; i++)
-            {
-                Console.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("   |", BOARD_SIZE -1)), "   "));
-                for (int j = 0; j < BOARD_SIZE; j++)
-                {
-                    if (Board[i, j].IsEmpty())
-                        Console.Write($" {(char)(ASCII_CODE_0 + cellNumber)} ");
-                    else
-                        Console.Write($" {(char)Board[i, j].GetCellState()} ");
-                    cellNumber++;
-
-                    if (j < BOARD_SIZE - 1)
-                        Console.Write("|");
-                }
-                Console.Write("\n");
-                if (i < BOARD_SIZE - 1)
-                    Console.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("___|", BOARD_SIZE - 1)), "___"));
-                else if (i == BOARD_SIZE - 1)
-                    Console.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("   |", BOARD_SIZE - 1)), "   "));
-            }
-            Console.WriteLine();
-        }
-
-        public void ClearBoard()
-        {
-            Console.Clear();
+            int xPos = (cNum - 1) / BOARD_SIZE;
+            int yPos = (cNum - 1) % BOARD_SIZE;
+            return new KeyValuePair<int, int>(xPos, yPos);
         }
 
         public CellOption GetOpponentSymbol(CellOption currentPlayerSymbol)
@@ -76,16 +51,9 @@ namespace Game.TicTacToe
                 return CellOption.CrossCell;
         }
 
-        public void ChangePlayer(IPlayer playerX, IPlayer playerY)
+        public void ChangePlayers()
         {
-            if (CurrentPlayer == playerX)
-            {
-                CurrentPlayer = playerY;
-            }
-            else
-            {
-                CurrentPlayer = playerX;
-            }
+            CurrentSymbol = (CurrentSymbol == CellOption.CrossCell ? CellOption.NoughtCell : CellOption.CrossCell);
         }
 
         public IEnumerable<int> GetUnPlayedMoves()
@@ -104,6 +72,12 @@ namespace Game.TicTacToe
         {
             var popedCell = _moveStack.Pop();
             Board[popedCell.Row, popedCell.Col].ResetCell();
+            ChangePlayers();
+        }
+
+        public virtual bool IsOver()
+        {
+            return CheckDraw() || CheckWin();
         }
 
         public bool CheckDraw()
@@ -132,19 +106,22 @@ namespace Game.TicTacToe
 
         public bool IsCellEmpty(int cNum)
         {
-            int xPos = (cNum - 1) / BOARD_SIZE;
-            int yPos = (cNum - 1) % BOARD_SIZE;
+            var getCoord = GetCoordinates(cNum);
+            return Board[getCoord.Key, getCoord.Value].IsEmpty();
+        }
 
-            return Board[xPos, yPos].IsEmpty();
+        private void RecordMove(int cNum)
+        {
+            var getCoord = GetCoordinates(cNum);
+            _moveStack.Push(Board[getCoord.Key, getCoord.Value]);
         }
 
         public void MarkCell(CellOption playerSymbol, int cNum)
         {
-            int xPos = (cNum - 1) / BOARD_SIZE;
-            int yPos = (cNum - 1) % BOARD_SIZE;
-
-            Board[xPos, yPos].MarkCell(playerSymbol);
-            _moveStack.Push(Board[xPos, yPos]);
+            var getCoord = GetCoordinates(cNum);
+            Board[getCoord.Key, getCoord.Value].MarkCell(playerSymbol);
+            RecordMove(cNum);
+            ChangePlayers();
         }
 
         public bool CheckWin()
