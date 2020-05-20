@@ -25,7 +25,7 @@ namespace Game.TicTacToe.Tests
         }
 
         [TestMethod]
-        public void ShouldPromptForPlayer()
+        public void ShouldPromptForPlayerType()
         {
             CreateUI();
             input.WriteLine("X");
@@ -36,7 +36,7 @@ namespace Game.TicTacToe.Tests
         }
 
         [TestMethod]
-        public void ShouldContinuePromptingForPlayerUntilValidInput()
+        public void ShouldContinuePromptingForPlayerTypeUntilValidInput()
         {
             CreateUI();
             input.WriteLine("INVALID");
@@ -141,12 +141,13 @@ namespace Game.TicTacToe.Tests
             input.WriteLine("2");
             input.WriteLine("2");
 
-            var game = new GameBoard();
-            ui.SelectPlayers(game);
-            ui.SelectPlayers(game);
+            //var game = new GameBoard();
+            //ui.SelectPlayers(game);
+            //ui.SelectPlayers(game);
 
-            ui.Play(game);
-            ui.PrintResult(game);
+            //ui.Play(game);
+            //ui.PrintResult(game);
+            ui.Run();
             Assert.AreEqual(output.ToString().Trim().Contains("Draw"), true);
         }
 

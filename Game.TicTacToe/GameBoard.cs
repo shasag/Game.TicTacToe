@@ -189,7 +189,7 @@ namespace Game.TicTacToe
                 {
                     if(i == j)
                         lstCellsLeft.Add(Board[i, j].GetCellState());
-                    if((i == j && i+j == boardSize -1) || i + j == boardSize - 1)
+                    if(i + j == boardSize - 1)
                         lstCellsRight.Add(Board[i, j].GetCellState());
                 }
             }

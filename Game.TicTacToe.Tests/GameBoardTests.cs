@@ -54,6 +54,18 @@ namespace Game.TicTacToe.Tests
         }
 
         [TestMethod]
+        public void GameIsOverWhenOnePlayerDoesNotHaveThreeInARow()
+        {
+            CreateGame();
+            game.MarkCell(Enums.CellOption.CrossCell, 1);
+            game.MarkCell(Enums.CellOption.NoughtCell, 7);
+            game.MarkCell(Enums.CellOption.CrossCell, 2);
+            game.MarkCell(Enums.CellOption.NoughtCell, 8);
+            game.MarkCell(Enums.CellOption.CrossCell, 4);
+            Assert.AreEqual(game.IsOver(), false);
+        }
+
+        [TestMethod]
         public void WinnerIfXGets123()
         {
             CreateGame();
@@ -89,6 +101,18 @@ namespace Game.TicTacToe.Tests
             game.MarkCell(Enums.CellOption.CrossCell, 9);
             game.MarkCell(Enums.CellOption.NoughtCell, 7);
             Assert.AreEqual(game.CheckWin(), true);
+        }
+
+        public void NotWinnerIfODoesNotGetBackwardDigonal()
+        {
+            CreateGame();
+            game.MarkCell(Enums.CellOption.CrossCell, 3);
+            game.MarkCell(Enums.CellOption.NoughtCell, 1);
+            game.MarkCell(Enums.CellOption.CrossCell, 2);
+            game.MarkCell(Enums.CellOption.NoughtCell, 4);
+            game.MarkCell(Enums.CellOption.CrossCell, 9);
+            game.MarkCell(Enums.CellOption.NoughtCell, 8);
+            Assert.AreEqual(game.CheckWin(), false);
         }
 
         [TestMethod]
@@ -253,6 +277,20 @@ namespace Game.TicTacToe.Tests
         {
             CreateGame();
             Assert.IsTrue(game.IsValidMove(1));
+        }
+
+        [TestMethod]
+        public void MovesOutsideBoardAreAllowed()
+        {
+            CreateGame();
+            Assert.IsFalse(game.IsValidMove(GameBoard.BOARD_SIZE*GameBoard.BOARD_SIZE + 1));
+        }
+
+        [TestMethod]
+        public void MovesBelow1AreAllowed()
+        {
+            CreateGame();
+            Assert.IsFalse(game.IsValidMove(0));
         }
 
         [TestMethod]
