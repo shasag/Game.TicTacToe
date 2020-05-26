@@ -29,7 +29,7 @@ namespace Game.TicTacToe.Tests
         {
             CreatePlayer();
             input.WriteLine("1");
-            player.TakeTurn();
+            player.TakeTurn(0);
             Assert.IsTrue(output.ToString().Contains("select your move "));
         }
 
@@ -45,7 +45,7 @@ namespace Game.TicTacToe.Tests
             game.MarkCell(Enums.CellOption.NoughtCell, 4);
             game.MarkCell(Enums.CellOption.CrossCell, 5);
             game.MarkCell(Enums.CellOption.NoughtCell, 7);
-            player.TakeTurn();
+            player.TakeTurn(10);
             Assert.IsTrue(output.ToString().Contains("select your move"));
         }
 
@@ -54,7 +54,7 @@ namespace Game.TicTacToe.Tests
         {
             CreatePlayer();
             input.WriteLine("5");
-            Assert.AreEqual(player.TakeTurn(), 5);
+            Assert.AreEqual(player.TakeTurn(10), 5);
         }
 
         [TestMethod]
@@ -64,7 +64,7 @@ namespace Game.TicTacToe.Tests
             //input.WriteLine("INVALID");
             input.WriteLine("1");
 
-            var result = player.TakeTurn();
+            var result = player.TakeTurn(10);
 
             var prompt = "select your move";
             Assert.IsTrue(output.ToString().Contains(prompt));

@@ -9,7 +9,9 @@ namespace Game.TicTacToe
 {
     public class GameBoard
     {
-        public const int BOARD_SIZE = 3;
+        private const int _minimuBoardSize = 3;
+        private int _matchLength;
+        public int BOARD_SIZE { get; private set; }
 
         public Cell[,] Board { get; set; }
 
@@ -19,6 +21,21 @@ namespace Game.TicTacToe
 
         public GameBoard()
         {
+            BOARD_SIZE = _minimuBoardSize;
+            _matchLength = _minimuBoardSize;
+            CurrentSymbol = CellOption.CrossCell;
+            _moveStack = new Stack<Cell>();
+            InitializeBoard();
+        }
+
+        public GameBoard(int size)
+        {
+            BOARD_SIZE = size;
+
+            _matchLength = _minimuBoardSize;
+            if (BOARD_SIZE > _minimuBoardSize)
+                _matchLength = _minimuBoardSize + 1;
+
             CurrentSymbol = CellOption.CrossCell;
             _moveStack = new Stack<Cell>();
             InitializeBoard();
@@ -93,7 +110,7 @@ namespace Game.TicTacToe
         public bool IsValidMove(int moveValue)
         {
             var isValidMove = true;
-            if (moveValue > GameBoard.BOARD_SIZE * GameBoard.BOARD_SIZE || moveValue < 1)
+            if (moveValue > BOARD_SIZE * BOARD_SIZE || moveValue < 1)
             {
                 isValidMove = false;
             }
@@ -171,40 +188,80 @@ namespace Game.TicTacToe
                     lstCells.Add(Board[i, position].GetCellState());
             }
 
-            if (lstCells.Any(x => x == CellOption.EmptyCell) || lstCells.Any(o => o != lstCells[0]))
-                return false;
-            else
+            if (IsPatternFound(lstCells))
                 return true;
+            else
+                return false;
         }
 
         private bool checkDigonals(int boardSize)
         {
             var retValLeft = false;
             var retValRight = false;
+            var lstCellsLeftUpper = new List<CellOption>();
             var lstCellsLeft = new List<CellOption>();
+            var lstCellsLeftLower = new List<CellOption>();
+            var lstCellsRightUpper = new List<CellOption>();
             var lstCellsRight = new List<CellOption>();
+            var lstCellsRightLower = new List<CellOption>();
             for (int i = 0; i < boardSize; i++)
             {
                 for (int j = 0; j < boardSize; j++)
                 {
                     if(i == j)
                         lstCellsLeft.Add(Board[i, j].GetCellState());
-                    if(i + j == boardSize - 1)
+                    if (i + 1 == j)
+                        lstCellsLeftLower.Add(Board[i, j].GetCellState());
+                    if (i == j + 1)
+                        lstCellsLeftUpper.Add(Board[i, j].GetCellState());
+                    if (i + j == boardSize - 1)
                         lstCellsRight.Add(Board[i, j].GetCellState());
+                    if (i + j == boardSize - 2)
+                        lstCellsRightUpper.Add(Board[i, j].GetCellState());
+                    if (i + j == boardSize)
+                        lstCellsRightLower.Add(Board[i, j].GetCellState());
                 }
             }
 
-            if (lstCellsLeft.Any(x => x == CellOption.EmptyCell) || lstCellsLeft.Any(o => o != lstCellsLeft[0]))
-                retValLeft =  false;
-            else
-                retValLeft = true;
+            retValLeft = IsPatternFound(lstCellsLeft);
+            retValLeft = retValLeft || IsPatternFound(lstCellsLeftUpper);
+            retValLeft = retValLeft || IsPatternFound(lstCellsLeftLower);
 
-            if (lstCellsRight.Any(x => x == CellOption.EmptyCell) || lstCellsRight.Any(o => o != lstCellsRight[0]))
-                retValRight = false;
-            else
-                retValRight = true;
+            retValRight = IsPatternFound(lstCellsRight);
+            retValRight = retValRight || IsPatternFound(lstCellsRightUpper);
+            retValRight = retValRight || IsPatternFound(lstCellsRightLower);
 
             return retValLeft || retValRight;
+        }
+
+        public bool IsPatternFound(List<CellOption> lstSymbol)
+        {
+            if (lstSymbol.Count() < _matchLength)
+                return false;
+            var currentCount = 0;
+            var symbol = CellOption.NoughtCell;
+            for (int i = 0; i < _matchLength; i++)
+            {
+                if (lstSymbol[i] == symbol)
+                    currentCount++;
+                else
+                    currentCount = 0;
+            }
+
+            if (currentCount < _matchLength)
+            {
+                currentCount = 0;
+                symbol = CellOption.CrossCell;
+                for (int i = 0; i < _matchLength; i++)
+                {
+                    if (lstSymbol[i] == symbol)
+                        currentCount++;
+                    else
+                        currentCount = 0;
+                }
+            }
+
+            return currentCount >= _matchLength;
         }
 
         #endregion

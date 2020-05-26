@@ -283,7 +283,7 @@ namespace Game.TicTacToe.Tests
         public void MovesOutsideBoardAreAllowed()
         {
             CreateGame();
-            Assert.IsFalse(game.IsValidMove(GameBoard.BOARD_SIZE*GameBoard.BOARD_SIZE + 1));
+            Assert.IsFalse(game.IsValidMove(game.BOARD_SIZE*game.BOARD_SIZE + 1));
         }
 
         [TestMethod]

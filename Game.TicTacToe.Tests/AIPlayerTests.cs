@@ -27,7 +27,7 @@ namespace Game.TicTacToe.Tests
             gameBoardInstance.MarkCell(testPlayerO.PreferredSymbol, 5);
             gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 4);
 
-            Assert.AreEqual(testPlayerO.TakeTurn(), 8);
+            Assert.AreEqual(testPlayerO.TakeTurn(10), 8);
         }
 
         [TestMethod]
@@ -43,7 +43,7 @@ namespace Game.TicTacToe.Tests
             gameBoardInstance.MarkCell(testPlayerO.PreferredSymbol, 3);
             gameBoardInstance.MarkCell(testPlayerX.PreferredSymbol, 7);
 
-            Assert.AreEqual(testPlayerO.TakeTurn(), 4);
+            Assert.AreEqual(testPlayerO.TakeTurn(10), 4);
         }
 
         [TestMethod]

@@ -27,11 +27,18 @@ namespace Game.TicTacToe
                 PreferredSymbol = CellOption.NoughtCell;
         }
 
-        public int TakeTurn()
+        public int TakeTurn(int difficultyLevel)
         {
             MovePrompt();
 
-            int cellNumber = ComputeBestMove(MinMax.Max, 0, 0).Move;
+            int cellNumber = ComputeBestMove(MinMax.Max, 0, difficultyLevel).Move;
+            var lm = Board.GetUnPlayedMoves().ToList();
+            if (cellNumber == 0)
+            {
+                var randomMove = new Random();
+                var randomMoveIndex = randomMove.Next(lm.Count());
+                cellNumber = lm[randomMoveIndex];
+            }
             return cellNumber;
         }
 
@@ -40,17 +47,17 @@ namespace Game.TicTacToe
             return $"{Name}, select your move : ";
         }
 
-        private LevelResult ComputeBestMove(MinMax levelType, int depth, int lastMove)
+        private LevelResult ComputeBestMove(MinMax levelType, int depth, int maxDepth)
         {
             var nextLevelType = MinMax.Min;
             var symbol = this.PreferredSymbol;
-            var winningScore = 1;
+            var winningScore = 1000000000;
             LevelResult result = new LevelResult(depth, -10, 0);
             if (levelType == MinMax.Min)
             {
                 symbol = Board.GetOpponentSymbol(this.PreferredSymbol);
                 nextLevelType = MinMax.Max;
-                winningScore = -1;
+                winningScore = -1000000000;
                 result = new LevelResult(depth, 10, 0);
             }
             var lm = Board.GetUnPlayedMoves().ToList();
@@ -62,10 +69,17 @@ namespace Game.TicTacToe
                     Board.BackTrackMove();
                     return new LevelResult(depth, winningScore, move); ;
                 }
-                LevelResult lr = new LevelResult(depth, 0, lastMove);
+                if (depth > maxDepth)
+                {
+                    Board.BackTrackMove();
+                    var randomMove = new Random();
+                    var randomMoveIndex = randomMove.Next(lm.Count());
+                    return new LevelResult(depth, winningScore, lm[randomMoveIndex]);
+                }
+                LevelResult lr = new LevelResult(depth, 0, maxDepth);
                 if (!Board.CheckDraw())
                 {
-                    lr = ComputeBestMove(nextLevelType, depth + 1, lastMove);
+                    lr = ComputeBestMove(nextLevelType, depth + 1, maxDepth);
                 }
                 if (levelType == MinMax.Min && (result.Result > lr.Result || (result.Result == lr.Result && result.Level > lr.Level))) result = lr;
                 if (levelType == MinMax.Max && (result.Result < lr.Result || (result.Result == lr.Result && result.Level > lr.Level))) result = lr;

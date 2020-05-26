@@ -98,6 +98,58 @@ namespace Game.TicTacToe.Tests
         }
 
         [TestMethod]
+        public void PrintResultShouldShowWinFor4ConsectiveRows()
+        {
+            CreateUI();
+            input.WriteLine("5");
+            input.WriteLine("1");
+            input.WriteLine("TestUser1");
+            input.WriteLine("1");
+            input.WriteLine("TestUser2");
+
+            var game = new GameBoard(5);
+            ui.SelectPlayers(game);
+            ui.SelectPlayers(game);
+            game.MarkCell(Enums.CellOption.CrossCell, 1);
+            game.MarkCell(Enums.CellOption.NoughtCell, 2);
+            game.MarkCell(Enums.CellOption.CrossCell, 6);
+            game.MarkCell(Enums.CellOption.NoughtCell, 7);
+            game.MarkCell(Enums.CellOption.CrossCell, 11);
+            game.MarkCell(Enums.CellOption.NoughtCell, 12);
+            game.MarkCell(Enums.CellOption.CrossCell, 16);
+
+            ui.PrintResult(game);
+
+            Assert.IsTrue(output.ToString().Contains("Wins!"));
+        }
+
+        [TestMethod]
+        public void PrintResultShouldShowWinFor4ConsectiveDigonalSymbols()
+        {
+            CreateUI();
+            input.WriteLine("5");
+            input.WriteLine("1");
+            input.WriteLine("TestUser1");
+            input.WriteLine("1");
+            input.WriteLine("TestUser2");
+
+            var game = new GameBoard(5);
+            ui.SelectPlayers(game);
+            ui.SelectPlayers(game);
+            game.MarkCell(Enums.CellOption.CrossCell, 1);
+            game.MarkCell(Enums.CellOption.NoughtCell, 2);
+            game.MarkCell(Enums.CellOption.CrossCell, 7);
+            game.MarkCell(Enums.CellOption.NoughtCell, 3);
+            game.MarkCell(Enums.CellOption.CrossCell, 13);
+            game.MarkCell(Enums.CellOption.NoughtCell, 4);
+            game.MarkCell(Enums.CellOption.CrossCell, 19);
+
+            ui.PrintResult(game);
+
+            Assert.IsTrue(output.ToString().Contains("Wins!"));
+        }
+
+        [TestMethod]
         public void GetUserTypeInputTest()
         {
             CreateUI();
@@ -135,11 +187,13 @@ namespace Game.TicTacToe.Tests
 
 
         [TestMethod]
-        public void AIUsersSimulationTest()
+        public void AIUsersSimulationTestExpert()
         {
             CreateUI();
+            input.WriteLine("3");
             input.WriteLine("2");
             input.WriteLine("2");
+            input.WriteLine("E");
 
             //var game = new GameBoard();
             //ui.SelectPlayers(game);
@@ -152,6 +206,36 @@ namespace Game.TicTacToe.Tests
         }
 
         [TestMethod]
+        public void AIUsersSimulationTestBegineer()
+        {
+            CreateUI();
+            input.WriteLine("3");
+            input.WriteLine("2");
+            input.WriteLine("2");
+            input.WriteLine("B");
+
+            //var game = new GameBoard();
+            //ui.SelectPlayers(game);
+            //ui.SelectPlayers(game);
+
+            //ui.Play(game);
+            //ui.PrintResult(game);
+            ui.Run();
+            Assert.AreEqual(output.ToString().Trim().Contains("Draw") || output.ToString().Trim().Contains("Wins!"), true);
+        }
+
+        [TestMethod]
+        public void IsBoardSizeSet()
+        {
+            CreateUI();
+            input.WriteLine("5");
+
+            ui.SelectBoardSize();
+
+            Assert.IsTrue(output.ToString().StartsWith("Select board size (3, 5, 7):"));
+        }
+
+        [TestMethod]
         public void AIUserWinsBySecondColumnTest()
         {
             CreateUI();
@@ -159,7 +243,7 @@ namespace Game.TicTacToe.Tests
             input.WriteLine("1");
             input.WriteLine("TestUser2");
 
-            var game = new GameBoard();
+            var game = new GameBoard(3);
             ui.SelectPlayers(game);
             ui.SelectPlayers(game);
 
@@ -168,7 +252,7 @@ namespace Game.TicTacToe.Tests
             game.MarkCell(Enums.CellOption.CrossCell, 5);
             game.MarkCell(Enums.CellOption.NoughtCell, 4);
 
-            ui.Play(game);
+            ui.Play(game, 10);
             ui.PrintResult(game);
             Assert.AreEqual(output.ToString().Trim().Contains("Wins"), true);
         }
@@ -196,7 +280,7 @@ namespace Game.TicTacToe.Tests
             game.MarkCell(Enums.CellOption.CrossCell, 7);
             game.MarkCell(Enums.CellOption.NoughtCell, 9);
 
-            ui.Play(game);
+            ui.Play(game, 10);
             ui.PrintResult(game);
             Assert.AreEqual(output.ToString().Trim().Contains("Draw"), true);
         }

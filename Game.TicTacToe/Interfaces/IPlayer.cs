@@ -10,6 +10,6 @@ namespace Game.TicTacToe.Interfaces
         CellOption PreferredSymbol { get; }
         string Name { get; }
 
-        public int TakeTurn();
+        public int TakeTurn(int level);
     }
 }

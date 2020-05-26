@@ -32,11 +32,51 @@ namespace Game.TicTacToe
 
         public virtual void Run()
         {
-            var game = new GameBoard();
+            int difficultyLevel = 0;
+            var game = new GameBoard(SelectBoardSize());
             SelectPlayers(game);
             SelectPlayers(game);
-            Play(game);
+            if (players.Any(x => x.GetType() == typeof(AIPlayer)))
+                difficultyLevel = SelectDifficultyLevel();
+            Play(game, difficultyLevel);
             PrintResult(game);
+        }
+
+        public virtual int SelectBoardSize()
+        {
+            int boardSize = 3;
+            do
+            {
+                output.Write("Select board size (3, 5, 7): ");
+                int.TryParse(input.ReadLine().Trim(), out boardSize);
+                output.WriteLine();
+            }
+            while (boardSize < 0 || boardSize == 1 || boardSize % 2 == 0);
+            output.WriteLine();
+            return boardSize;
+        }
+
+        public virtual int SelectDifficultyLevel()
+        {
+            int level;
+            string levelString;
+            do
+            {
+                output.Write("Select difficulty level (B(begineer), M(medium), E(expert)): ");
+                levelString = input.ReadLine().Trim();
+                if (levelString == "B")
+                    level = 0;
+                else if (levelString == "M")
+                    level = 5;
+                else if (levelString == "E")
+                    level = 100;
+                else
+                    level = 0;
+                output.WriteLine();
+            }
+            while (levelString != "B" && levelString != "M" && levelString != "E");
+            output.WriteLine();
+            return level;
         }
 
         public virtual void SelectPlayers(GameBoard game)
@@ -48,8 +88,14 @@ namespace Game.TicTacToe
             var userType = GetUserType();
             if (userType == "1")
             {
-                output.Write("Select player name: ");
-                userName = input.ReadLine().ToUpper();
+                userName = string.Empty;
+                do
+                {
+                    output.Write("Select player name: ");
+                    userName = input.ReadLine().ToUpper();
+                    output.WriteLine();
+                }
+                while (string.IsNullOrWhiteSpace(userName.Trim()));
                 output.WriteLine();
                 SetPlayer(new HumanPlayer(userName, game, symbol, input, output));
             }
@@ -77,28 +123,30 @@ namespace Game.TicTacToe
         public void DisplayBoard(GameBoard game)
         {
             //Using ASCII constant to ensure the single character in case we increase the dimension
-            const int ASCII_CODE_0 = 48;
+            //const int ASCII_CODE_0 = 48;
             int cellNumber = 1;
-            for (int i = 0; i < GameBoard.BOARD_SIZE; i++)
+            for (int i = 0; i < game.BOARD_SIZE; i++)
             {
-                output.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("   |", GameBoard.BOARD_SIZE - 1)), "   "));
-                for (int j = 0; j < GameBoard.BOARD_SIZE; j++)
+                output.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("   |", game.BOARD_SIZE - 1)), "   "));
+                for (int j = 0; j < game.BOARD_SIZE; j++)
                 {
                     if (game.Board[i, j].IsEmpty())
-                        output.Write($" {(char)(ASCII_CODE_0 + cellNumber)} ");
+                        output.Write($"   ");//output.Write($" {(char)(ASCII_CODE_0 + cellNumber)} ");
                     else
                         output.Write($" {(char)game.Board[i, j].GetCellState()} ");
                     cellNumber++;
 
-                    if (j < GameBoard.BOARD_SIZE - 1)
+                    if (j < game.BOARD_SIZE - 1)
                         output.Write("|");
                 }
                 output.Write("\n");
-                if (i < GameBoard.BOARD_SIZE - 1)
-                    output.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("___|", GameBoard.BOARD_SIZE - 1)), "___"));
-                else if (i == GameBoard.BOARD_SIZE - 1)
-                    output.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("   |", GameBoard.BOARD_SIZE - 1)), "   "));
+                if (i < game.BOARD_SIZE - 1)
+                    output.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("___|", game.BOARD_SIZE - 1)), "___"));
+                else if (i == game.BOARD_SIZE - 1)
+                    output.WriteLine(string.Concat(string.Concat(Enumerable.Repeat("   |", game.BOARD_SIZE - 1)), "   "));
             }
+            output.WriteLine();
+            output.WriteLine($"Allowed Moves {1} TO {game.BOARD_SIZE * game.BOARD_SIZE}");
             output.WriteLine();
         }
 
@@ -107,13 +155,13 @@ namespace Game.TicTacToe
             Console.Clear();
         }
 
-        public virtual void Play(GameBoard game)
+        public virtual void Play(GameBoard game, int difficultyLevel)
         {
             ClearBoard();
             DisplayBoard(game);
             while (!game.IsOver())
             {
-                var move = GetPlayer(game.CurrentSymbol).TakeTurn();
+                var move = GetPlayer(game.CurrentSymbol).TakeTurn(difficultyLevel);
                 game.MarkCell(game.CurrentSymbol, move);
                 ClearBoard();
                 DisplayBoard(game);
@@ -125,7 +173,7 @@ namespace Game.TicTacToe
             if (game.CheckDraw())
                 output.WriteLine("Draw!");
             else
-                output.WriteLine("Player {0} Wins!", GetPlayer(game.CurrentSymbol).Name);
+                output.WriteLine("Player {0} Wins!", GetPlayer(game.GetOpponentSymbol(game.CurrentSymbol)).Name);
         }
     }
 }

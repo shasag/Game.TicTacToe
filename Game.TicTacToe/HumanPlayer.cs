@@ -28,13 +28,18 @@ namespace Game.TicTacToe
                 PreferredSymbol = CellOption.NoughtCell;
         }
 
-        public int TakeTurn()
+        public int TakeTurn(int difficultyLevel)
         {
-            int cellNumber;
+            int cellNumber = -1;
             do
             {
-                Output.Write(MovePrompt());
-                cellNumber = Convert.ToInt32(Input.ReadLine().Trim());
+                do
+                {
+                    Output.Write(MovePrompt());
+                    int.TryParse(Input.ReadLine().Trim(), out cellNumber);
+                }
+                while (cellNumber == -1);
+                
                 Output.WriteLine();
             } while (!Game.IsValidMove(cellNumber));
             return cellNumber;
